@@ -1,6 +1,7 @@
 import prisma from "@/lib/db/prisma";
 import openai, { getEmbedding } from "@/lib/openai";
 import { auth } from "@clerk/nextjs";
+import { getTranslations } from "next-intl/server";
 import { NextResponse } from "next/server";
 import { ChatCompletionMessage, ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
@@ -8,6 +9,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const messages: ChatCompletionMessage[] = body.messages;
+    const localization = await getTranslations('ChatAPI');
 
     const messagesTruncated = messages.slice(-6);
 
@@ -47,15 +49,12 @@ export async function POST(req: Request) {
 
     const systemMessage: ChatCompletionMessageParam = {
       role: "system",
-      content: `
-        You are a note-taking career guidance assistant app, responsible for answering user questions ONLY about career oriented questions, if asked otherwise refuse.
-        You answer the user's question based on their existing notes and documentation about career guidance.
-        If you can't come up with career suggestions or lack informations, advise the user to add notes to the board, not to type in chat.
-        If the user asks a question unrelated to career guidance, respond with: "Thanks for your question! It seems unrelated to career guidance. If you need career advice, feel free to ask!"
-        The relevant notes for this query are:\n` +
+      content: 
+        localization("prompt") +
+        localization("relevantNotes") +
         (relevantNotes
           ? relevantNotes.map((note: any) => `Title: ${note.title}\n\nContent:\n${note.content}`).join("\n\n")
-          : "No relevant notes found.")
+          : localization("noRelevantNotes"))
     };
 
     const completion = await openai.beta.chat.completions.stream({

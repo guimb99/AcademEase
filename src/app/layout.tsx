@@ -1,26 +1,32 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { ThemeProvider } from "./ThemeProvider";
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
+import { enUS, ptBR } from '@clerk/localizations'
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+export async function generateMetadata() {
+  const localization = await getTranslations('App');
+  return {
+      title: "AcademEase",
+      description: localization("description")
+  }
+}
 
-export const metadata: Metadata = {
-  title: "AcademEase",
-  description: "Description",
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <ThemeProvider attribute="class">{children}</ThemeProvider>
+    <ClerkProvider localization={locale === "en-US" ? enUS : ptBR}>
+      <html lang={locale}>
+        <body>
+          <NextIntlClientProvider messages={messages}>
+            <ThemeProvider attribute="class">{children}</ThemeProvider>
+          </NextIntlClientProvider>
         </body>
       </html>
     </ClerkProvider>

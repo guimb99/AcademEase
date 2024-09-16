@@ -2,6 +2,7 @@ import Note from "@/components/Note";
 import prisma from "@/lib/db/prisma";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "AcademEase",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default async function NotesPage() {
   const { userId } = auth();
 
+  const localization = await getTranslations('Board');
   if (!userId) throw Error("userId undefined");
 
   const allNotes = await prisma.note.findMany({ where: { userId } });
@@ -21,7 +23,7 @@ export default async function NotesPage() {
       ))}
       {allNotes.length === 0 && (
         <div className="col-span-full text-center">
-          {"You don't have any notes yet. Why don't you create one?"}
+          {localization("noNotes")}
         </div>
       )}
     </div>

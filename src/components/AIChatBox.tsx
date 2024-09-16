@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useTranslations } from "next-intl";
 
 interface AIChatBoxProps {
   open: boolean;
@@ -39,6 +40,7 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
     }
   }, [open]);
 
+  const localization = useTranslations('ChatBox');
   const lastMessageIsUser = messages[messages.length - 1]?.role === "user";
 
   return (
@@ -60,7 +62,7 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
             <ChatMessage
               message={{
                 role: "assistant",
-                content: "Thinking...",
+                content: localization("thinking")
               }}
             />
           )}
@@ -68,14 +70,14 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
             <ChatMessage
               message={{
                 role: "assistant",
-                content: "Something went wrong. Please try again.",
+                content: localization("error")
               }}
             />
           )}
           {!error && messages.length === 0 && (
             <div className="flex h-full items-center justify-center gap-3">
               <Bot />
-              Ask the AI a question about your notes
+              {localization("askBot")}
             </div>
           )}
         </div>
@@ -93,10 +95,10 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
           <Input
             value={input}
             onChange={handleInputChange}
-            placeholder="Say something..."
+            placeholder={localization("say")}
             ref={inputRef}
           />
-          <Button type="submit">Send</Button>
+          <Button type="submit">{localization("send")}</Button>
         </form>
       </div>
     </div>

@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { useTranslations } from "next-intl";
 
 interface NoteProps {
   note: NoteModel;
@@ -17,12 +18,13 @@ interface NoteProps {
 
 export default function Note({ note }: NoteProps) {
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const localization = useTranslations('Note');
 
   const wasUpdated = note.updatedAt > note.createdAt;
 
   const createdUpdatedAtTimestamp = (
     wasUpdated ? note.updatedAt : note.createdAt
-  ).toDateString();
+  ).toLocaleDateString();
 
   return (
     <>
@@ -35,7 +37,7 @@ export default function Note({ note }: NoteProps) {
           <CardTitle>{note.title}</CardTitle>
           <CardDescription>
             {createdUpdatedAtTimestamp}
-            {wasUpdated && " (updated)"}
+            {wasUpdated && localization("updated")}
           </CardDescription>
         </CardHeader>
         <CardContent>

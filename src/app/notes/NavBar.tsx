@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +16,7 @@ import { useState } from "react";
 
 export default function NavBar() {
   const { theme } = useTheme();
-
+  const localization = useTranslations('NavBar');
   const [showAddEditNoteDialog, setShowAddEditNoteDialog] = useState(false);
 
   return (
@@ -37,7 +38,7 @@ export default function NavBar() {
             <ThemeToggleButton />
             <Button onClick={() => setShowAddEditNoteDialog(true)}>
               <Plus size={20} className="mr-2" />
-              Add Note
+              {localization("createNote")}
             </Button>
             <AIChatButton />
           </div>

@@ -1,0 +1,38 @@
+{
+  "App": {
+    "description": "Um aplicativo inteligente de orientação de carreira com integração de IA"
+  },
+  "Home": {
+    "description": "Um aplicativo inteligente de orientação de carreira com integração de IA, construído com OpenAI, Next.js, Shadcn UI, Clerk e mais.",
+    "start": "Começar"
+  },
+  "NavBar": {
+    "createNote": "Criar Nota"
+  },
+  "Board": {
+    "noNotes": "Você ainda não tem nenhuma nota. Por que não cria uma?"
+  },
+  "EditNote": {
+    "editNote": "Editar Nota",
+    "createNote": "Criar Nota",
+    "deleteNote": "Deletar Nota",
+    "submit": "Enviar",
+    "title": "Título",
+    "content": "Conteúdo",
+    "color": "Cor",
+    "error": "Algo deu errado. Por favor, tente novamente."
+  },
+  "ChatBox": {
+    "thinking": "Pensando...",
+    "error": "Algo deu errado. Por favor, tente novamente.",
+    "askBot": "Faça uma pergunta à IA sobre suas notas",
+    "say": "Diga algo...",
+    "send": "Enviar"
+  },
+  "Note": {
+    "updated": " (atualizado)"
+  },
+  "Theme": {
+    "toggleTheme": "Mudar tema"
+  }
+}

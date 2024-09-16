@@ -23,6 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { useTranslations } from "next-intl";
 import LoadingButton from "./ui/loading-button";
 
 interface AddEditNoteDialogProps {
@@ -36,6 +37,7 @@ export default function AddEditNoteDialog({
   setOpen,
   noteToEdit,
 }: AddEditNoteDialogProps) {
+  const localization = useTranslations('EditNote');
   const [deleteInProgress, setDeleteInProgress] = useState(false);
   const { theme } = useTheme();
   const colors = ["#bcdfc9", "#fff69b", "#a1c8e9", "#f6c2d9"];
@@ -74,7 +76,7 @@ export default function AddEditNoteDialog({
       setOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Something went wrong. Please try again.");
+      alert(localization("error"));
     }
   }
 
@@ -93,7 +95,7 @@ export default function AddEditNoteDialog({
       setOpen(false);
     } catch (error) {
       console.error(error);
-      alert("Something went wrong. Please try again.");
+      alert(localization("error"));
     } finally {
       setDeleteInProgress(false);
     }
@@ -103,7 +105,7 @@ export default function AddEditNoteDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{noteToEdit ? "Edit Note" : "Add Note"}</DialogTitle>
+          <DialogTitle>{noteToEdit ? localization("editNote") : localization("createNote")}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
@@ -112,10 +114,10 @@ export default function AddEditNoteDialog({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>{localization("title")}</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Title" 
+                      placeholder={localization("title")}
                       {...field} 
                     />
                   </FormControl>
@@ -128,10 +130,10 @@ export default function AddEditNoteDialog({
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Content</FormLabel>
+                  <FormLabel>{localization("content")}</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Content" 
+                      placeholder={localization("content")}
                       {...field} 
                     />
                   </FormControl>
@@ -144,7 +146,7 @@ export default function AddEditNoteDialog({
               name="color"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Color</FormLabel>
+                  <FormLabel>{localization("color")}</FormLabel>
                   <FormControl>
                     <div className="flex gap-2">
                       {colors.map((color) => (
@@ -174,7 +176,7 @@ export default function AddEditNoteDialog({
                   onClick={deleteNote}
                   type="button"
                 >
-                  Delete note
+                  {localization("deleteNote")}
                 </LoadingButton>
               )}
               <LoadingButton
@@ -182,7 +184,7 @@ export default function AddEditNoteDialog({
                 loading={form.formState.isSubmitting}
                 disabled={deleteInProgress}
               >
-                Submit
+                {localization("submit")}
               </LoadingButton>
             </DialogFooter>
           </form>

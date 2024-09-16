@@ -4,11 +4,13 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
   const { userId } = auth();
-
   if (userId) redirect("/notes");
+
+  const localization = useTranslations('Home');
 
   return (
     <main className="flex h-screen flex-col items-center justify-center gap-5">
@@ -19,11 +21,10 @@ export default function Home() {
         </span>
       </div>
       <p className="max-w-prose text-center">
-        An intelligent career guidance app with AI integration, built with OpenAI,
-        Next.js, Shadcn UI, Clerk, and more.
+        {localization('description')}
       </p>
       <Button size="lg" asChild>
-        <Link href="/notes">Start</Link>
+        <Link href="/notes">{localization('start')}</Link>
       </Button>
     </main>
   );

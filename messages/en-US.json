@@ -1,0 +1,38 @@
+{
+  "App": {
+    "description": "An intelligent career guidance app with AI integration"
+  },
+  "Home": {
+    "description": "An intelligent career guidance app with AI integration, built with OpenAI, Next.js, Shadcn UI, Clerk, and more.",
+    "start": "Get Started"
+  },
+  "NavBar": {
+    "createNote": "Create Note"
+  },
+  "Board": {
+    "noNotes": "You don't have any notes yet. Why don't you create one?"
+  },
+  "EditNote": {
+    "editNote": "Edit Note",
+    "createNote": "Create Note",
+    "deleteNote": "Delete Note",
+    "submit": "Submit",
+    "title": "Title",
+    "content": "Content",
+    "color": "Color",
+    "error": "Something went wrong. Please try again."
+  },
+  "ChatBox": {
+    "thinking": "Thinking...",
+    "error": "Something went wrong. Please try again.",
+    "askBot": "Ask the AI a question about your notes",
+    "say": "Say something...",
+    "send": "Send"
+  },
+  "Note": {
+    "updated": " (updated)"
+  },
+  "Theme": {
+    "toggleTheme": "Toggle theme"
+  }
+}

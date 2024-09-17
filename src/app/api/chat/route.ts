@@ -18,7 +18,44 @@ export async function POST(req: Request) {
     );
 
     const { userId } = auth();
-  
+    if (!userId) return;
+    const userProfile = await prisma.userProfile.findUnique({
+      where: { userId },
+    });
+
+    if (!userProfile) {
+      throw new Error('User profile not found');
+    }
+
+    const userEmbedding = userProfile.embedding;
+
+    const similarUsers: any = await prisma.userProfile.aggregateRaw({
+      pipeline: [
+        {
+          $vectorSearch: {
+            index: "user-profiles",
+            queryVector: userEmbedding,
+            path: "embedding",
+            numCandidates: 100,
+            limit: 5,
+          },
+        },
+        {
+          $match: {
+            userId: { $ne: userId },
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            score: { $meta: "vectorSearchScore" },
+          },
+        },
+      ],
+    });
+
+    const similarUserIds = similarUsers.map((user: any) => user.userId);
+
     const relevantNotes: any = await prisma.note.aggregateRaw({
       pipeline: [
         {
@@ -26,12 +63,14 @@ export async function POST(req: Request) {
             index: "relevant-notes",
             queryVector: embedding,
             path: "embedding",
-            numCandidates: 150,
-            limit: 4
-          }
+            numCandidates: 100,
+            limit: 5,
+          },
         },
         {
-          $match: { userId: userId }
+          $match: {
+            userId: { $in: [userId, ...similarUserIds] },
+          },
         },
         {
           $project: {
@@ -40,21 +79,26 @@ export async function POST(req: Request) {
             content: 1,
             userId: 1,
             score: {
-              $meta: "vectorSearchScore"
-            }
-          }
-        }
-      ]
+              $meta: "vectorSearchScore",
+            },
+          },
+        },
+      ],
     });
 
     const systemMessage: ChatCompletionMessageParam = {
       role: "system",
-      content: 
+      content:
         localization("prompt") +
         localization("relevantNotes") +
         (relevantNotes
-          ? relevantNotes.map((note: any) => `Title: ${note.title}\n\nContent:\n${note.content}`).join("\n\n")
-          : localization("noRelevantNotes"))
+          ? relevantNotes
+              .map(
+                (note: any) =>
+                  `Title: ${note.title}\n\nContent:\n${note.content}`,
+              )
+              .join("\n\n")
+          : localization("noRelevantNotes")),
     };
 
     const completion = await openai.beta.chat.completions.stream({
@@ -81,7 +125,7 @@ export async function POST(req: Request) {
         }
       },
     });
-  
+
     return new NextResponse(stream);
   } catch (error) {
     console.error(error);

@@ -22,3 +22,11 @@ model Note {
 
   @@map("notes")
 }
+
+model UserProfile {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @unique
+  embedding Float[]
+
+  @@map("userProfiles")
+}

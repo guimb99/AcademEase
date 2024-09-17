@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       return note;
     });
 
+    await updateUserProfile(userId);
     return Response.json({ note }, { status: 201 });
   } catch (error) {
     console.error(error);
@@ -90,6 +91,7 @@ export async function PUT(req: Request) {
       return updatedNote;
     });
 
+    await updateUserProfile(userId);
     return Response.json({ updatedNote }, { status: 200 });
   } catch (error) {
     console.error(error);
@@ -135,4 +137,41 @@ export async function DELETE(req: Request) {
 
 async function getEmbeddingForNote(title: string, content: string | undefined) {
   return getEmbedding(title + "\n\n" + content ?? "");
+}
+
+async function updateUserProfile(userId: string) {
+  const userNotes = await prisma.note.findMany({
+    where: { userId },
+    select: { embedding: true },
+  });
+
+  if (userNotes.length === 0) {
+    return;
+  }
+
+  const embeddings = userNotes.map((note) => note.embedding);
+  const userEmbedding = averageEmbeddings(embeddings);
+
+  await prisma.userProfile.upsert({
+    where: { userId },
+    update: { embedding: userEmbedding },
+    create: {
+      userId,
+      embedding: userEmbedding,
+    },
+  });
+}
+
+function averageEmbeddings(embeddings: number[][]): number[] {
+  const numEmbeddings = embeddings.length;
+  const embeddingLength = embeddings[0].length;
+  const averagedEmbedding = new Array(embeddingLength).fill(0);
+
+  embeddings.forEach((embedding) => {
+    for (let i = 0; i < embeddingLength; i++) {
+      averagedEmbedding[i] += embedding[i] / numEmbeddings;
+    }
+  });
+
+  return averagedEmbedding;
 }

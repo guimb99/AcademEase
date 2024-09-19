@@ -7,7 +7,7 @@ import ThemeToggleButton from "@/components/ThemeToggleButton";
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { Plus } from "lucide-react";
+import { Plus, Tv2  } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -41,6 +41,12 @@ export default function NavBar() {
               {localization("createNote")}
             </Button>
             <AIChatButton />
+            <Link href="/courses">
+              <Button>
+                  <Tv2 size={20} className="mr-2" />
+                  {localization("courses")}
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

@@ -36,14 +36,17 @@
     "noRelevantNotes": "Nenhuma nota relevante encontrada."
   },
   "Courses": {
-    "recommendedCourses": "Cursos Recomendados (Dados Estáticos Atualmente)",
-    "loadingCourses": "Carregando cursos..."
+    "recommendedCourses": "Cursos Recomendados",
+    "loadingCourses": "Carregando cursos...",
+    "udemyAPIError": "Estamos com problemas para buscar recomendações de cursos no momento. Por favor, tente novamente mais tarde."
   },
   "CourseList": {
     "viewCourse": "Ver Curso"
   },
   "UdemyCompletion": {
-    "prompt": "Você é uma IA que identifica temas educacionais com base em embeddings de perfil de usuário. Responda com 5 palavras-chave sobre as principais preferências do usuário, separadas por vírgulas. Com base neste embedding de perfil de usuário, quais temas ou tópicos educacionais distintos seriam relevantes?"
+    "prompt": "Você é uma IA que identifica opções de carreira com base em notas do perfil de usuário. Responda com 5 palavras-chave sobre as principais opções de carreira, com base nas preferências do usuário, separadas por vírgulas.",
+    "relevantNotes": "As notas relevantes para esta consulta são:\n",
+    "noRelevantNotes": "Nenhuma nota relevante encontrada."
   },
   "Note": {
     "updated": " (atualizado)"

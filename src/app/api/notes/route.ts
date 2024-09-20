@@ -140,38 +140,51 @@ async function getEmbeddingForNote(title: string, content: string | undefined) {
 }
 
 async function updateUserProfile(userId: string) {
-  const userNotes = await prisma.note.findMany({
+  const topRelevantNotes = await prisma.note.findMany({
     where: { userId },
     select: { embedding: true },
   });
 
-  if (userNotes.length === 0) {
+  if (topRelevantNotes.length === 0) {
     return;
   }
 
-  const embeddings = userNotes.map((note) => note.embedding);
-  const userEmbedding = averageEmbeddings(embeddings);
+  const embeddings = topRelevantNotes.map((note) => note.embedding);
+  const newUserEmbedding = combineEmbeddingsWithCosineSimilarity(embeddings);
 
   await prisma.userProfile.upsert({
     where: { userId },
-    update: { embedding: userEmbedding },
+    update: { embedding: newUserEmbedding },
     create: {
       userId,
-      embedding: userEmbedding,
+      embedding: newUserEmbedding,
     },
   });
 }
 
-function averageEmbeddings(embeddings: number[][]): number[] {
-  const numEmbeddings = embeddings.length;
+function combineEmbeddingsWithCosineSimilarity(embeddings: number[][]): number[] {
+  if (embeddings.length === 0) return [];
+  if (embeddings.length === 1) return embeddings[0];
+
   const embeddingLength = embeddings[0].length;
-  const averagedEmbedding = new Array(embeddingLength).fill(0);
+  let result = [...embeddings[0]]; // Initialize with the first embedding
 
-  embeddings.forEach((embedding) => {
-    for (let i = 0; i < embeddingLength; i++) {
-      averagedEmbedding[i] += embedding[i] / numEmbeddings;
+  for (let i = 1; i < embeddings.length; i++) {
+    const embedding = embeddings[i];
+    
+    // Calculate cosine similarity
+    const dotProduct = result.reduce((sum, val, j) => sum + val * embedding[j], 0);
+    const magnitudeA = Math.sqrt(result.reduce((sum, val) => sum + val * val, 0));
+    const magnitudeB = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+    const similarity = dotProduct / (magnitudeA * magnitudeB || 1); // Avoid division by zero
+
+    // Add weighted embedding to result
+    for (let j = 0; j < embeddingLength; j++) {
+      result[j] += embedding[j] * similarity;
     }
-  });
+  }
 
-  return averagedEmbedding;
+  // Normalize the result
+  const magnitude = Math.sqrt(result.reduce((sum, val) => sum + val * val, 0));
+  return result.map(val => val / (magnitude || 1)); // Avoid division by zero
 }

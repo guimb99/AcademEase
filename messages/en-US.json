@@ -36,14 +36,17 @@
     "noRelevantNotes": "No relevant notes found."
   },
   "Courses": {
-    "recommendedCourses": "Recommended Courses (Static Data Currently)",
-    "loadingCourses": "Loading courses..."
+    "recommendedCourses": "Recommended Courses",
+    "loadingCourses": "Loading courses...",
+    "udemyAPIError": "We're having trouble fetching course recommendations right now. Please try again later."
   },
   "CourseList": {
     "viewCourse": "View Course"
   },
   "UdemyCompletion": {
-    "prompt": "You are an AI that identifies educational themes based on user profile embeddings. Respond with 5 keywords about the principal user likings, separated by commas. Based on this user profile embedding, what distinct educational themes or topics would be relevant?"
+    "prompt": "You are an AI that identifies career options based on user profile notes. Respond with 5 keywords about the principal career options, according to user likings, separated by commas.",
+    "relevantNotes": "The relevant notes for this query are:\n",
+    "noRelevantNotes": "No relevant notes found."
   },
   "Note": {
     "updated": " (updated)"

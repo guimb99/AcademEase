@@ -74,7 +74,6 @@ export async function getUdemyCourses(embedding: number[]) {
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
   const themes = await getThemesFromEmbedding(embedding);
-  console.log(themes);
 
   const params = new URLSearchParams({
     search: themes.join(' '),
@@ -91,9 +90,27 @@ export async function getUdemyCourses(embedding: number[]) {
       }
     });
 
-    return response.data.results;
+    return response.data.results.map((course: UdemyCourse) => ({
+      id: course.id.toString(),
+      title: course.title,
+      description: course.headline,
+      url: `https://www.udemy.com${course.url}`,
+      price: course.price_detail.price_string,
+    }));
   } catch (error) {
     console.error("Error getting courses from Udemy:", error);
     return [];
   }
+}
+
+interface UdemyCourse {
+  id: number;
+  title: string;
+  url: string;
+  headline: string;
+  price_detail: {
+    amount: number;
+    currency: string;
+    price_string: string;
+  };
 }

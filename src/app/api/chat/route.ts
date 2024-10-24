@@ -69,7 +69,7 @@ export async function POST(req: Request) {
         },
         {
           $match: {
-            userId: { $in: [userId, ...similarUserIds] },
+            userId: { $in: [userId] },
           },
         },
         {
@@ -86,6 +86,36 @@ export async function POST(req: Request) {
       ],
     });
 
+    const contextRelevantNotes: any = (similarUserIds.length) ? await prisma.note.aggregateRaw({
+      pipeline: [
+        {
+          $vectorSearch: {
+            index: "relevant-notes",
+            queryVector: embedding,
+            path: "embedding",
+            numCandidates: 100,
+            limit: 5,
+          },
+        },
+        {
+          $match: {
+            userId: { $in: [...similarUserIds] },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            title: 1,
+            content: 1,
+            userId: 1,
+            score: {
+              $meta: "vectorSearchScore",
+            },
+          },
+        },
+      ],
+    }) : [];
+
     const systemMessage: ChatCompletionMessageParam = {
       role: "system",
       content:
@@ -95,10 +125,18 @@ export async function POST(req: Request) {
           ? relevantNotes
               .map(
                 (note: any) =>
-                  `Title: ${note.title}\n\nContent:\n${note.content}`,
+                  `Title: ${note.title}\nContent:${note.content}`,
               )
-              .join("\n\n")
-          : localization("noRelevantNotes")),
+              .join("\n")
+          : localization("noRelevantNotes")) +
+        (contextRelevantNotes
+          ? "\n\n" + localization("contextNotes") + contextRelevantNotes
+              .map(
+                (note: any) =>
+                  `Title: ${note.title}\nContent:${note.content}`,
+              )
+              .join("\n")
+          : "")
     };
 
     const completion = await openai.beta.chat.completions.stream({

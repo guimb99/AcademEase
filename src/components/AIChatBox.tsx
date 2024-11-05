@@ -70,7 +70,7 @@ export default function AIChatBox({ open, onClose }: AIChatBoxProps) {
             <ChatMessage
               message={{
                 role: "assistant",
-                content: localization("error")
+                content: JSON.parse(error.message).error
               }}
             />
           )}

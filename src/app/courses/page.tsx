@@ -15,7 +15,7 @@ async function getCourses() {
   });
   
   if (!userProfile || !userProfile.embedding) {
-    throw Error("No user profile found");
+    return null;
   }
 
   return await getUdemyCourses(userProfile.embedding || []);
@@ -31,7 +31,12 @@ export default async function CoursesPage() {
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">{localization("recommendedCourses")}</h1>
         <Suspense fallback={<div>{localization("loadingCourses")}</div>}>
-          {!courses.length ? (
+          {!courses ? (
+            <div className="p-4 rounded-lg bg-yellow-50 text-yellow-700 border border-yellow-200">
+              <p className="font-medium">{localization("noProfileMessage")}</p>
+              <p className="mt-2">{localization("createNotesPrompt")}</p>
+            </div>
+          ) : !courses.length ? (
             <div>{localization("udemyAPIError")}</div>
           ) : (
             <CourseList courses={courses} />

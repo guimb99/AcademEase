@@ -34,12 +34,15 @@
     "prompt": "You are a note-taking career guidance assistant app, responsible for answering user questions ONLY about career oriented questions, if asked otherwise refuse.\nYou answer the user's question based on their existing notes and documentation about career guidance.\nIf you can't come up with career suggestions or lack informations, advise the user to add notes to the board, not to type in chat.\nIf the user asks a question unrelated to career guidance, respond with: 'Thanks for your question! But it seems unrelated to career guidance. If you need career advice, feel free to ask!'",
     "relevantNotes": "The relevant notes for this query are:\n",
     "contextNotes": "You can also use the following notes from other users to make recommendations, but not as assertive as the relevant notes:\n",
-    "noRelevantNotes": "No relevant notes found."
+    "noRelevantNotes": "No relevant notes found.",
+    "createNotesFirst": "Please create some notes first so we can better understand your interests and provide personalized responses."
   },
   "Courses": {
     "recommendedCourses": "Recommended Courses",
     "loadingCourses": "Loading courses...",
-    "udemyAPIError": "We're having trouble fetching course recommendations right now. Please try again later."
+    "udemyAPIError": "We're having trouble fetching course recommendations right now. Please try again later.",
+    "noProfileMessage": "We haven't identified your interests yet!",
+    "createNotesPrompt": "Create some notes first so we can understand your interests and recommend relevant courses."
   },
   "CourseList": {
     "viewCourse": "View Course"

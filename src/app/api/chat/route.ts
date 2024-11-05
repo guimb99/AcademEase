@@ -24,7 +24,10 @@ export async function POST(req: Request) {
     });
 
     if (!userProfile) {
-      throw new Error('User profile not found');
+      return Response.json(
+        { error: localization("createNotesFirst")},
+        { status: 500 }
+      );
     }
 
     const userEmbedding = userProfile.embedding;
@@ -166,7 +169,9 @@ export async function POST(req: Request) {
 
     return new NextResponse(stream);
   } catch (error) {
-    console.error(error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return Response.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
